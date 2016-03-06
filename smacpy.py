@@ -142,8 +142,11 @@ def trainAndTest(trainpath, trainwavs, testpath, testwavs):
 	for wavpath,label in testwavs.items():
 		result = model.classify(os.path.join(testpath, wavpath))
 		if verbose: print(" inferred: %s" % result)
-		if result == label:
+		if result in label:
 			ncorrect += 1
+			print "\n\t\tMATCH: {} = {} !!\n".format(result,label)
+		else:
+			print "Wrong: {} = {}".format(result,label)
 	return (ncorrect, len(testwavs), len(model.gmms))
 
 #######################################################################
@@ -170,10 +173,12 @@ if __name__ == '__main__':
 	for onepath in ['trainpath', 'testpath']:
 		pattern = os.path.join(args[onepath], '*.wav')
 		for wavpath in glob(pattern):
+
 			if args['numchars'] != 0:
 				label = os.path.basename(wavpath)[:args['numchars']]
 			else:
 				label = os.path.basename(wavpath).split(args['charsplit'])[0]
+			print '\t\tLabel = ',label, '!!'
 			shortwavpath = os.path.relpath(wavpath, args[onepath])
 			wavsfound[onepath][shortwavpath] = label
 		if len(wavsfound[onepath])==0:
